@@ -1,0 +1,12 @@
+{
+    "python.linting.pylintEnabled": false,
+    "python.pythonPath": "/Users/i862000/.pyenv/versions/tcc/bin/python",
+    "python.linting.flake8Enabled": true,
+    "python.linting.enabled": true,
+    "python.linting.pylintArgs": ["--reports", "12", "--disable", "I0011"],
+    "python.linting.flake8Args": ["--ignore=E24,W504,E302, E305, E203, E261, E211, E201, E202, E262, E501", "--verbose"],
+    "python.linting.pydocstyleArgs": ["--ignore=D400", "--ignore=D4"],
+    "editor.rulers": [
+        130
+    ]
+}

@@ -88,13 +88,15 @@ blockchain.create_genesis_block()
 # the address to other participating members of the network
 peers = set()
 
-# endpoint to submit a new transaction. This will be used by
+# endpoint to submit a new maintenance. This will be used by
 # our application to add new data (posts) to the blockchain
-@app.route('/new_transaction', methods=['POST'])
+# In Brazil, the CPF is an person individual identification number
+# and the CNPJ is the equivalent for companies
+@app.route('/new_service', methods=['POST'])
 def new_transaction():
     tx_data = request.get_json()
-    # TO DO: DEFINE FIELDS OF THE TRANSACTIONS
-    required_fields = ["TODO"]
+    required_fields = ["current_owner_cpf", "vendor_cnpj", "license_plate",
+                       "service_type", "service_description", "current_mileage_in_km"]
 
     for field in required_fields:
         if not tx_data.get(field):
@@ -105,7 +107,6 @@ def new_transaction():
     blockchain.add_new_transaction(tx_data)
 
     return "Success", 201
-
 
 # endpoint to return the node's copy of the chain.
 # Our application will be using this endpoint to query
@@ -175,10 +176,9 @@ def create_chain_from_dump(chain_dump):
         block = Block(block_data["index"],
                       block_data["transactions"],
                       block_data["timestamp"],
-                      block_data["previous_hash"],
-                      block_data["nonce"])
+                      block_data["previous_hash"])
         proof = block_data['hash']
-        added = generated_blockchain.add_block(block, proof)
+        added = generated_blockchain.add_block(block)
         if not added:
             raise Exception("The chain dump is tampered!!")
     return generated_blockchain
