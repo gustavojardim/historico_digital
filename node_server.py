@@ -7,12 +7,11 @@ import requests
 
 
 class Block:
-    def __init__(self, index, transactions, timestamp, previous_hash, nonce=0):
+    def __init__(self, index, transactions, timestamp, previous_hash):
         self.index = index
         self.transactions = transactions
         self.timestamp = timestamp
         self.previous_hash = previous_hash
-        self.nonce = nonce
 
     def compute_hash(self):
         """
@@ -23,8 +22,6 @@ class Block:
 
 
 class Blockchain:
-    # difficulty of our PoW algorithm
-    difficulty = 2
 
     def __init__(self):
         self.unconfirmed_transactions = []
@@ -44,7 +41,7 @@ class Blockchain:
     def last_block(self):
         return self.chain[-1]
 
-    def add_block(self, block, proof):
+    def add_block(self, block):
         """
         A function that adds the block to the chain after verification.
         Verification includes:
@@ -57,39 +54,11 @@ class Blockchain:
         if previous_hash != block.previous_hash:
             return False
 
-        if not Blockchain.is_valid_proof(block, proof):
-            return False
-
-        block.hash = proof
         self.chain.append(block)
         return True
 
-    @staticmethod
-    def proof_of_work(block):
-        """
-        Function that tries different values of nonce to get a hash
-        that satisfies our difficulty criteria.
-        """
-        block.nonce = 0
-
-        computed_hash = block.compute_hash()
-        while not computed_hash.startswith('0' * Blockchain.difficulty):
-            block.nonce += 1
-            computed_hash = block.compute_hash()
-
-        return computed_hash
-
     def add_new_transaction(self, transaction):
         self.unconfirmed_transactions.append(transaction)
-
-    @classmethod
-    def is_valid_proof(cls, block, block_hash):
-        """
-        Check if block_hash is valid hash of block and satisfies
-        the difficulty criteria.
-        """
-        return (block_hash.startswith('0' * Blockchain.difficulty) and
-                block_hash == block.compute_hash())
 
     @classmethod
     def check_chain_validity(cls, chain):
@@ -102,38 +71,13 @@ class Blockchain:
             # using `compute_hash` method.
             delattr(block, "hash")
 
-            if not cls.is_valid_proof(block, block_hash) or \
-                    previous_hash != block.previous_hash:
+            if previous_hash != block.previous_hash:
                 result = False
                 break
 
             block.hash, previous_hash = block_hash, block_hash
 
         return result
-
-    def mine(self):
-        """
-        This function serves as an interface to add the pending
-        transactions to the blockchain by adding them to the block
-        and figuring out Proof Of Work.
-        """
-        if not self.unconfirmed_transactions:
-            return False
-
-        last_block = self.last_block
-
-        new_block = Block(index=last_block.index + 1,
-                          transactions=self.unconfirmed_transactions,
-                          timestamp=time.time(),
-                          previous_hash=last_block.hash)
-
-        proof = self.proof_of_work(new_block)
-        self.add_block(new_block, proof)
-
-        self.unconfirmed_transactions = []
-
-        return True
-
 
 app = Flask(__name__)
 
@@ -144,13 +88,13 @@ blockchain.create_genesis_block()
 # the address to other participating members of the network
 peers = set()
 
-
 # endpoint to submit a new transaction. This will be used by
 # our application to add new data (posts) to the blockchain
 @app.route('/new_transaction', methods=['POST'])
 def new_transaction():
     tx_data = request.get_json()
-    required_fields = ["author", "content"]
+    # TO DO: DEFINE FIELDS OF THE TRANSACTIONS
+    required_fields = ["TODO"]
 
     for field in required_fields:
         if not tx_data.get(field):
@@ -174,24 +118,6 @@ def get_chain():
     return json.dumps({"length": len(chain_data),
                        "chain": chain_data,
                        "peers": list(peers)})
-
-
-# endpoint to request the node to mine the unconfirmed
-# transactions (if any). We'll be using it to initiate
-# a command to mine from our application itself.
-@app.route('/mine', methods=['GET'])
-def mine_unconfirmed_transactions():
-    result = blockchain.mine()
-    if not result:
-        return "No transactions to mine"
-    else:
-        # Making sure we have the longest chain before announcing to the network
-        chain_length = len(blockchain.chain)
-        consensus()
-        if chain_length == len(blockchain.chain):
-            # announce the recently mined block to the network
-            announce_new_block(blockchain.last_block)
-        return "Block #{} is mined.".format(blockchain.last_block.index)
 
 
 # endpoint to add new peers to the network.
@@ -258,27 +184,6 @@ def create_chain_from_dump(chain_dump):
     return generated_blockchain
 
 
-# endpoint to add a block mined by someone else to
-# the node's chain. The block is first verified by the node
-# and then added to the chain.
-@app.route('/add_block', methods=['POST'])
-def verify_and_add_block():
-    block_data = request.get_json()
-    block = Block(block_data["index"],
-                  block_data["transactions"],
-                  block_data["timestamp"],
-                  block_data["previous_hash"],
-                  block_data["nonce"])
-
-    proof = block_data['hash']
-    added = blockchain.add_block(block, proof)
-
-    if not added:
-        return "The block was discarded by the node", 400
-
-    return "Block added to the chain", 201
-
-
 # endpoint to query unconfirmed transactions
 @app.route('/pending_tx')
 def get_pending_tx():
@@ -287,7 +192,7 @@ def get_pending_tx():
 
 def consensus():
     """
-    Our naive consnsus algorithm. If a longer valid chain is
+    Our naive consensus algorithm. If a longer valid chain is
     found, our chain is replaced with it.
     """
     global blockchain
