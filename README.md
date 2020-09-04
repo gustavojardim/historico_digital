@@ -11,7 +11,7 @@ Please read the [step-by-step implementation tutorial](https://www.ibm.com/devel
 Clone (or fork) the project,
 
 ```sh
-$ git clone https://github.com/satwikkansal/python_blockchain_app.git
+$ git clone git@github.com:gustavojardim/historico_digital.git
 ```
 
 Install the dependencies,
@@ -35,7 +35,7 @@ One instance of our blockchain node is now up and running at port 8000.
 Run the application on a different terminal session,
 
 ```sh
-$ python run_app.py
+$ python app.py
 ```
 
 The application should be up and running at [http://localhost:5000](http://localhost:5000).
