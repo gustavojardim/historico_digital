@@ -93,7 +93,7 @@ peers = set()
 # In Brazil, the CPF is an person individual identification number
 # and the CNPJ is the equivalent for companies
 @app.route('/new_service', methods=['POST'])
-def new_transaction():
+def new_service():
     tx_data = request.get_json()
     required_fields = ["current_owner_cpf", "vendor_cnpj", "license_plate",
                        "service_type", "service_description", "current_mileage_in_km"]
@@ -177,7 +177,6 @@ def create_chain_from_dump(chain_dump):
                       block_data["transactions"],
                       block_data["timestamp"],
                       block_data["previous_hash"])
-        proof = block_data['hash']
         added = generated_blockchain.add_block(block)
         if not added:
             raise Exception("The chain dump is tampered!!")

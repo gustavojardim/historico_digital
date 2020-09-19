@@ -5,7 +5,7 @@ class Car(db.Model):
     __tablename__ = 'CAR'
     car_id = db.Column(db.Integer, primary_key=True)
     license_plate = db.Column(db.String(60))
-    current_mileage_in_km = db.GIColumn(db.String(18))
+    current_mileage_in_km = db.Column(db.String(18))
 
     def __init__(self, cpf, email, password):
         self.cpf = cpf
