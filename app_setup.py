@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
-from back_end.blockchain import Blockchain
+from blockchain import Blockchain
 
 HOST = '127.0.0.1'
 SERVER = 'postgres'
