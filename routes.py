@@ -1,13 +1,14 @@
 import json
 
 from flask import Blueprint, request
-from back_end.app_setup import db, blockchain
+from app_setup import db, blockchain
 
-from back_end.tools.transaction_validator import TransactionValidator
+from tools.transaction_validator import TransactionValidator
 
-from back_end.off_chain_model.car import Car, car_schema, cars_schema
-from back_end.off_chain_model.user import User, user_schema, users_schema
-from back_end.off_chain_model.vendor import Vendor, vendor_schema, vendors_schema
+from off_chain_model.car import Car, car_schema, cars_schema
+from off_chain_model.user import User, user_schema, users_schema
+from off_chain_model.vendor import Vendor, vendor_schema, vendors_schema
+from off_chain_model.service import Service, service_schema, services_schema
 
 routes_bp = Blueprint('routes', __name__, template_folder='back_end')
 
@@ -19,18 +20,34 @@ def new_service():
 
     for field in required_fields:
         if not tx_data.get(field):
-            return "Invalid transaction data", 404
-
-    blockchain = Blockchain()
-    blockchain.create_genesis_block()
+            return "Invalid transaction data: missing required field", 404
 
     tx_validator = TransactionValidator()
 
-    if tx_validator.validate(blockchain.last_block.transaction, tx_data):
-        blockchain.add_new_block(tx_data)
-        return "Success", 201
-    else:
-        return "Invalid transaction data", 404
+    if tx_validator.validate(blockchain.last_block_by_license_plate(tx_data['license_plate']), tx_data):
+        new_block = blockchain.add_new_block(tx_data)
+        if new_block:
+            b_hash = new_block.hash
+            block_number = new_block.index
+
+            car = Car.query.filter_by(license_plate=tx_data['license_plate']).all()
+            vendor = Vendor.query.filter_by(cnpj=tx_data['vendor_cnpj']).all()
+
+            car = car[0]
+            vendor = vendor[0]
+
+            car_id = car.car_id
+            user_id = car.user_id
+            vendor_id = vendor.vendor_id
+            new_service = Service(b_hash, block_number, car_id, user_id, vendor_id)
+
+            print(new_service)
+
+            db.session.add(new_service)
+            db.session.commit()
+            return "Success", 201
+
+    return "Invalid transaction data: invalid token or mileage", 404
 
 @routes_bp.route('/new_vendor', methods=['POST'])
 def new_vendor():
@@ -73,10 +90,44 @@ def new_car():
 
     return car_schema.jsonify(new_car)
 
+# @routes_bp.route('/chain', methods=['GET'])
+# def get_chain():
+#     chain_data = []
+#     for block in blockchain.chain:
+#         chain_data.append(block.__dict__)
+#     return json.dumps({"length": len(chain_data),
+#                        "chain": chain_data})
+
 @routes_bp.route('/chain', methods=['GET'])
 def get_chain():
     chain_data = []
+    block_dict = {}
+
     for block in blockchain.chain:
-        chain_data.append(block.__dict__)
-    return json.dumps({"length": len(chain_data),
-                       "chain": chain_data})
+        block_dict = block.__dict__
+        if block_dict['transaction']:
+            print(block_dict)
+            vendor = Vendor.query.filter_by(cnpj=block_dict['transaction']['vendor_cnpj']).all()
+            vendor = vendor[0]
+            block_dict['transaction']['vendor_name'] = vendor.name
+            chain_data.append(block_dict)
+    return json.dumps(chain_data)
+
+@routes_bp.route('/chain/<license_plate>', methods=['GET'])
+def get_chain_by_license_plate(license_plate):
+    chain_data = []
+    block_dict = {}
+    car = Car.query.filter_by(license_plate=license_plate).all()
+    car_id = car[0].car_id
+    services = Service.query.filter_by(car_id=car_id).all()
+
+    for service in services:
+        for block in blockchain.chain:
+            if block.index == service.block_number:
+                block_dict = block.__dict__
+                print(block_dict)
+                vendor = Vendor.query.filter_by(cnpj=block_dict['transaction']['vendor_cnpj']).all()
+                vendor = vendor[0]
+                block_dict['transaction']['vendor_name'] = vendor.name
+                chain_data.append(block_dict)
+    return json.dumps(chain_data)

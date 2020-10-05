@@ -1,12 +1,12 @@
-from back_end.app_setup import db
-from back_end.app_setup import marsh
+from app_setup import db
+from app_setup import marsh
 
 class Vendor(db.Model):
     __tablename__ = 'vendor'
     vendor_id = db.Column(db.Integer, primary_key=True)
-    cnpj = db.Column(db.String(60))
-    name = db.Column(db.String(60))
-    email = db.Column(db.String(18))
+    cnpj = db.Column(db.String(14))
+    name = db.Column(db.String(128))
+    email = db.Column(db.String(64))
     password = db.Column(db.String(12))
 
     def __init__(self, cnpj, name, email, password):

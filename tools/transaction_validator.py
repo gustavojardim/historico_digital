@@ -2,9 +2,16 @@ class TransactionValidator(object):
     def __init__(self):
         pass
 
-    def validate(self, last_transaction, current_transaction):
+    def validate(self, last_block, current_transaction):
         # validates current_mileage is equal or greater than the last
         # validates if the token is of permission is valid
-        if last_transaction['current_mileage_in_km'] < current_transaction['current_mileage_in_km']:
+        if current_transaction['token'] == 'invalid':
             return False
-        return True
+
+        if not last_block.transaction:
+            return True
+
+        if int(last_block.transaction['current_mileage_in_km']) < current_transaction['current_mileage_in_km']:
+            return True
+
+        return False

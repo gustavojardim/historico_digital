@@ -1,5 +1,5 @@
-from back_end.app_setup import db
-from back_end.app_setup import marsh
+from app_setup import db
+from app_setup import marsh
 
 class Service(db.Model):
     __tablename__ = 'service'

@@ -23,3 +23,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 marsh = Marshmallow(app)
+
+blockchain = Blockchain()
+blockchain.create_genesis_block()

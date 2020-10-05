@@ -1,12 +1,12 @@
-from back_end.app_setup import db
-from back_end.app_setup import marsh
+from app_setup import db
+from app_setup import marsh
 
 class User(db.Model):
     __tablename__ = 'users'
     user_id = db.Column(db.Integer, primary_key=True)
-    cpf = db.Column(db.String(60))
-    name = db.Column(db.String(60))
-    email = db.Column(db.String(18))
+    cpf = db.Column(db.String(11))
+    name = db.Column(db.String(128))
+    email = db.Column(db.String(64))
     password = db.Column(db.String(12))
     cars = db.relationship('off_chain_model.car.Car', backref='User', primaryjoin='off_chain_model.car.Car.user_id==User.user_id')
 

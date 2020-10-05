@@ -1,11 +1,10 @@
 import time
 
-from back_end.block import Block
+from block import Block
 
 class Blockchain:
 
-    def __init__(self, license_plate):
-        self.license_plate = license_plate
+    def __init__(self):
         self.chain = []
 
     def create_genesis_block(self):
@@ -21,6 +20,23 @@ class Blockchain:
     def last_block(self):
         return self.chain[-1]
 
+    def last_block_by_license_plate(self, license_plate):
+        print(license_plate, 'given_lp')
+        if len(self.chain) > 1:
+            for block in reversed(self.chain):
+                try:
+                    last_block_license_plate = block.transaction['license_plate']
+                except TypeError:
+                    print('except')
+                    print(self.chain[0])
+                    return self.chain[0]
+                print(block, 'block')
+                print(last_block_license_plate)
+                if last_block_license_plate == license_plate:
+                    return block
+            #return self.chain[0]
+        return self.last_block
+
     def add_new_block(self, transaction):
         new_block = Block(index=self.last_block.index + 1,
                           transaction=transaction,
@@ -30,11 +46,11 @@ class Blockchain:
         previous_hash = self.last_block.hash
 
         if previous_hash != new_block.previous_hash:
-            return False
+            return None
 
         self.chain.append(new_block)
 
-        return True
+        return new_block
 
     def persist_blockchain(self):
         pass

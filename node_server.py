@@ -1,11 +1,11 @@
 import json
 import requests
 
-from back_end.blockchain import Blockchain
-from back_end.app_setup import app, blockchain
-from back_end.block import Block
+from blockchain import Blockchain
+from app_setup import app, blockchain
+from block import Block
 
-from back_end.routes import routes_bp
+from routes import routes_bp
 
 # the address to other participating members of the network
 peers = set()
