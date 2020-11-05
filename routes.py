@@ -28,26 +28,26 @@ def new_service():
     if tx_validator.validate(blockchain.last_block_by_license_plate(tx_data['license_plate']), tx_data):
         energyusage.evaluate(blockchain.add_new_block, tx_data, pdf=True)
         new_block = blockchain.add_new_block(tx_data)
-        if new_block:
-            b_hash = new_block.hash
-            block_number = new_block.index
+        # if new_block:
+        #     b_hash = new_block.hash
+        #     block_number = new_block.index
 
-            car = Car.query.filter_by(license_plate=tx_data['license_plate']).all()
-            vendor = Vendor.query.filter_by(cnpj=tx_data['vendor_cnpj']).all()
+        #     car = Car.query.filter_by(license_plate=tx_data['license_plate']).all()
+        #     vendor = Vendor.query.filter_by(cnpj=tx_data['vendor_cnpj']).all()
 
-            car = car[0]
-            vendor = vendor[0]
+        #     car = car[0]
+        #     vendor = vendor[0]
 
-            car_id = car.car_id
-            user_id = car.user_id
-            vendor_id = vendor.vendor_id
-            new_service = Service(b_hash, block_number, car_id, user_id, vendor_id)
+        #     car_id = car.car_id
+        #     user_id = car.user_id
+        #     vendor_id = vendor.vendor_id
+        #     new_service = Service(b_hash, block_number, car_id, user_id, vendor_id)
 
-            print(new_service)
+        #     print(new_service)
 
-            db.session.add(new_service)
-            db.session.commit()
-            return "Success", 201
+        #     db.session.add(new_service)
+        #     db.session.commit()
+        #     return "Success", 201
 
     return "Invalid transaction data: invalid token or mileage", 404
 
