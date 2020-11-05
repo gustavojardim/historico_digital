@@ -1,4 +1,5 @@
 import json
+import energyusage
 
 from flask import Blueprint, request
 from app_setup import db, blockchain
@@ -15,8 +16,8 @@ routes_bp = Blueprint('routes', __name__, template_folder='back_end')
 @routes_bp.route('/new_service', methods=['POST'])
 def new_service():
     tx_data = request.get_json()
-    required_fields = ["current_owner_cpf", "vendor_cnpj", "license_plate",
-                       "service_type", "service_description", "current_mileage_in_km", "token"]
+    required_fields = ["owner_cpf", "vendor_cnpj", "vendor_name", "license_plate",
+                       "service_type", "service_description", "mileage", "token"]
 
     for field in required_fields:
         if not tx_data.get(field):
@@ -25,6 +26,7 @@ def new_service():
     tx_validator = TransactionValidator()
 
     if tx_validator.validate(blockchain.last_block_by_license_plate(tx_data['license_plate']), tx_data):
+        energyusage.evaluate(blockchain.add_new_block, tx_data, pdf=True)
         new_block = blockchain.add_new_block(tx_data)
         if new_block:
             b_hash = new_block.hash
