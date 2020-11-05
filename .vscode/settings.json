@@ -1,6 +1,5 @@
 {
     "python.linting.pylintEnabled": false,
-    "python.pythonPath": "/Users/i862000/.pyenv/versions/tcc/bin/python",
     "python.linting.flake8Enabled": true,
     "python.linting.enabled": true,
     "python.linting.pylintArgs": ["--reports", "12", "--disable", "I0011"],
@@ -8,5 +7,6 @@
     "python.linting.pydocstyleArgs": ["--ignore=D400", "--ignore=D4"],
     "editor.rulers": [
         130
-    ]
+    ],
+    "python.pythonPath": "/Users/i862000/.local/share/virtualenvs/historico_digital-LvmqGefb/bin/python"
 }
