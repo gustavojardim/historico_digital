@@ -1,15 +1,14 @@
 import json
-import energyusage
 
 from flask import Blueprint, request
-from app_setup import db, blockchain
+from blockchain_app.application_setup import db, blockchain
 
-from tools.transaction_validator import TransactionValidator
+from blockchain_app.tools.transaction_validator import TransactionValidator
 
-from off_chain_model.car import Car, car_schema, cars_schema
-from off_chain_model.user import User, user_schema, users_schema
-from off_chain_model.vendor import Vendor, vendor_schema, vendors_schema
-from off_chain_model.service import Service, service_schema, services_schema
+from blockchain_app.off_chain_model.car import Car, car_schema, cars_schema
+from blockchain_app.off_chain_model.user import User, user_schema, users_schema
+from blockchain_app.off_chain_model.vendor import Vendor, vendor_schema, vendors_schema
+from blockchain_app.off_chain_model.service import Service, service_schema, services_schema
 
 routes_bp = Blueprint('routes', __name__, template_folder='back_end')
 
@@ -26,28 +25,27 @@ def new_service():
     tx_validator = TransactionValidator()
 
     if tx_validator.validate(blockchain.last_block_by_license_plate(tx_data['license_plate']), tx_data):
-        energyusage.evaluate(blockchain.add_new_block, tx_data, pdf=True)
         new_block = blockchain.add_new_block(tx_data)
-        # if new_block:
-        #     b_hash = new_block.hash
-        #     block_number = new_block.index
+        if new_block:
+            b_hash = new_block.hash
+            block_number = new_block.index
 
-        #     car = Car.query.filter_by(license_plate=tx_data['license_plate']).all()
-        #     vendor = Vendor.query.filter_by(cnpj=tx_data['vendor_cnpj']).all()
+            car = Car.query.filter_by(license_plate=tx_data['license_plate']).all()
+            vendor = Vendor.query.filter_by(cnpj=tx_data['vendor_cnpj']).all()
 
-        #     car = car[0]
-        #     vendor = vendor[0]
+            car = car[0]
+            vendor = vendor[0]
 
-        #     car_id = car.car_id
-        #     user_id = car.user_id
-        #     vendor_id = vendor.vendor_id
-        #     new_service = Service(b_hash, block_number, car_id, user_id, vendor_id)
+            car_id = car.car_id
+            user_id = car.user_id
+            vendor_id = vendor.vendor_id
+            new_service = Service(b_hash, block_number, car_id, user_id, vendor_id)
 
-        #     print(new_service)
+            print(new_service)
 
-        #     db.session.add(new_service)
-        #     db.session.commit()
-        #     return "Success", 201
+            db.session.add(new_service)
+            db.session.commit()
+            return "Success", 201
 
     return "Invalid transaction data: invalid token or mileage", 404
 

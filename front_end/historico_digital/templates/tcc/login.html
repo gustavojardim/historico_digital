@@ -1,0 +1,17 @@
+<!-- login.html -->
+{% extends "base.html" %}
+
+{% block content %}
+
+    {% if username is None %}
+        <form role="form" method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" value="Submit" class="btn btn-info">Log In</button>
+        </form>
+    {% else %}
+        <h3>ha muleke</h3>
+        <a href="{% url "login" %}?action=logout">Log Out</a>
+    {% endif %}
+
+{% endblock content %}

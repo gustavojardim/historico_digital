@@ -1,5 +1,5 @@
-from app_setup import db
-from app_setup import marsh
+from application_setup import db
+from application_setup import marsh
 
 class Vendor(db.Model):
     __tablename__ = 'vendor'

@@ -1,0 +1,36 @@
+<!-- home.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="col-md-6 col-auto">
+  <div class="card">
+    <div class="card-header">
+      Services
+    </div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">License plate</th>
+          <th scope="col">Service type</th>
+          <th scope="col">Service description</th>
+          <th scope="col">Vendor name</th>
+          <th scope="col">Mileage</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for service in services %}
+        <tr>
+          <th scope="row">{{ forloop.counter }}</th>
+          <td>{{ service.transaction.license_plate }}</td>
+          <td>{{ service.transaction.service_type }}</td>
+          <td>{{ service.transaction.service_description }}</td>
+          <td>{{ service.transaction.vendor_name }}</td>
+          <td>{{ service.transaction.mileage }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock content %}
