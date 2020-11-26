@@ -19,7 +19,7 @@ Clone (or fork) the project,
 $ git clone git@github.com:gustavojardim/historico_digital.git
 ```
 
-Create a SQL database to be your off-chain storage and configure it on **application_setup.py**,
+Create a SQL database to be your off-chain storage and configure it on **blockchain_app/application_setup.py**,
 
 Install the dependencies,
 
@@ -31,7 +31,7 @@ $ pipenv install
 Run the application,
 
 ```sh
-$ python app.py
+$ python blockchain_app/app.py
 ```
 
 The application should be up and running at [http://localhost:5000](http://localhost:5000).
