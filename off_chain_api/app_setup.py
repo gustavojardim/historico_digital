@@ -1,7 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
-from blockchain_app.blockchain import Blockchain
 
 HOST = '127.0.0.1'
 SERVER = 'postgres'
@@ -23,6 +22,3 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 marsh = Marshmallow(app)
-
-blockchain = Blockchain()
-blockchain.create_genesis_block()
