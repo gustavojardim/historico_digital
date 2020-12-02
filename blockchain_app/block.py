@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 from hashlib import sha256
 
@@ -7,6 +8,7 @@ class Block:
         self.index = index
         self.transaction = transaction
         self.timestamp = timestamp
+        self.date = datetime.fromtimestamp(timestamp).strftime('%d-%m-%Y')
         self.previous_hash = previous_hash
         self.hash = self.compute_hash()
 

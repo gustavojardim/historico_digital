@@ -7,7 +7,7 @@ class Node(db.Model):
     node_id = db.Column(db.Integer, primary_key=True)
     ip_address = db.Column(db.String(32), nullable=False, unique=True)
     alias = db.Column(db.String(16), nullable=False, unique=True)
-    active = db.Column(db.BIT(1), nullable=False)
+    active = db.Column(db.Boolean, nullable=False)
 
     def __init__(self, ip_address, alias):
         self.ip_address = ip_address

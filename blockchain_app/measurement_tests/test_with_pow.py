@@ -1,4 +1,4 @@
-from measurement_tests.blockchain_with_pow import BlockchainPow
+from blockchain_app.measurement_tests.blockchain_with_pow import BlockchainPow
 
 import time
 import random

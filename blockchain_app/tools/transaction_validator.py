@@ -11,7 +11,7 @@ class TransactionValidator(object):
         if not last_block.transaction:
             return True
 
-        if int(last_block.transaction['mileage']) < current_transaction['mileage']:
+        if int(last_block.transaction['mileage']) < int(current_transaction['mileage']):
             return True
 
         return False

@@ -2,20 +2,23 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="col-md-6 col-auto">
+<div class="container">
   <div class="card">
     <div class="card-header">
-      Services
+      Histórico de Serviços
     </div>
     <table class="table">
       <thead>
         <tr>
           <th scope="col">#</th>
-          <th scope="col">License plate</th>
-          <th scope="col">Service type</th>
-          <th scope="col">Service description</th>
-          <th scope="col">Vendor name</th>
-          <th scope="col">Mileage</th>
+          <th scope="col">Placa do Veículo</th>
+          <th scope="col">Tipo de Serviço</th>
+          <th scope="col">Descrição do Serviço</th>
+          <th scope="col">Data</th>
+          {% if user.user_type_id == 1 %}
+            <th scope="col">Fornecedor</th>
+          {% endif %}
+          <th scope="col">Quilometragem</th>
         </tr>
       </thead>
       <tbody>
@@ -25,7 +28,10 @@
           <td>{{ service.transaction.license_plate }}</td>
           <td>{{ service.transaction.service_type }}</td>
           <td>{{ service.transaction.service_description }}</td>
-          <td>{{ service.transaction.vendor_name }}</td>
+          <td>{{ service.date }}</td>
+          {% if user.user_type_id == 1 %}
+            <td>{{ service.transaction.vendor_name }}</td>
+          {% endif %}
           <td>{{ service.transaction.mileage }}</td>
         </tr>
         {% endfor %}

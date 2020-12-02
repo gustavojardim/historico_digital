@@ -1,17 +1,23 @@
 <!-- login.html -->
-{% extends "base.html" %}
+{% extends "auth_base.html" %}
 
 {% block content %}
-
-    {% if username is None %}
-        <form role="form" method="POST">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" value="Submit" class="btn btn-info">Log In</button>
-        </form>
-    {% else %}
-        <h3>ha muleke</h3>
-        <a href="{% url "login" %}?action=logout">Log Out</a>
-    {% endif %}
-
+  {% load static %}
+  <form class="form-signin" method="POST">
+      {% csrf_token %}
+      <img class="form_logo mb-3" src="{% static 'images/logo.png' %}">
+      <h1 class="h3 mb-3 font-weight-normal">Login</h1>
+      {{form.e_mail}}
+      {{form.password}}
+      <div class="checkbox mb-3">
+        <!-- FUTURE FEATURE <label>
+          {{form.remember_me}} Remember me
+        </label> -->
+        <p>
+          <a href="/register">Ainda não está cadastrado?</a>
+        </p>
+      </div>
+      <button class="btn btn-lg btn-primary btn-block" type="submit" value="submit">Entrar</button>
+      <p class="mt-5 mb-3 text-muted">© 2020 - much blockchain wow</p>
+  </form>
 {% endblock content %}

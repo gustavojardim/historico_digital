@@ -52,9 +52,6 @@ class Blockchain:
 
         return new_block
 
-    def persist_blockchain(self):
-        pass
-
     @classmethod
     def check_chain_validity(cls, chain):
         result = True

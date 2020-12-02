@@ -1,0 +1,25 @@
+<!-- register.html -->
+{% extends "auth_base.html" %}
+
+{% block content %}
+    {% load static %}
+    <form class="form-signin" method="POST">
+        {% csrf_token %}
+        <img class="form_logo mb-3" src="{% static 'images/logo.png' %}">
+        <h1 class="h3 mb-3 font-weight-normal">Cadastre-se</h1>
+        {{form.name}}
+        {{form.registration}}
+        {{form.e_mail}}
+        {{form.password}}
+        <small id="senhaHelp" class="form-text text-muted">Minímo: 6 caracteres, uma letra minúscula e uma maiúscula, um número e um caractere especial</small>
+        <p class="mb-2"></p>
+        {{form.password_1}}
+        <div class="checkbox mb-3">
+            <p>
+                <a href="/login">Já possui uma conta? Faça login.</a>
+            </p>
+        </div>
+        <button id="submit" class="btn btn-lg btn-primary btn-block" type="submit">Cadastrar</button>
+        <p class="mt-5 mb-3 text-muted">© 2020 - much blockchain wow</p>
+    </form>
+{% endblock content %}

@@ -1,0 +1,37 @@
+<!-- login.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+    integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2"
+    crossorigin="anonymous">
+    <link rel="icon" class href="{% static 'images/icon.png' %}">
+    <link rel="stylesheet" href="{% static 'css/custom_styles.css' %}">
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="https://kit.fontawesome.com/58ba5332de.js" crossorigin="anonymous"></script>
+    <title>Histórico Digital</title>
+  </head>
+  <body class="text-center centered">
+    {% if message is not None %}
+      <div style="display: inline-block; position: absolute; top: 50px;">
+        <p id="message" class="message">{{message}}</p>
+      </div>
+    {% endif %}
+    {% block content %}
+    {% endblock content %}
+    <script>
+      //When the page has loaded.
+      $( document ).ready(function(){
+          $('#message').fadeIn('slow', function(){
+             $('#message').delay(5000).fadeOut();
+          });
+      });
+    </script>
+    <script type="text/javascript" src="{% static 'js/validations.js' %}"></script>
+  </body>
+</html>

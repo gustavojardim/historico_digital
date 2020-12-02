@@ -11,6 +11,7 @@ class User(db.Model):
     password = db.Column(db.Text, nullable=False)
     salt = db.Column(db.Text)
     user_type_id = db.Column(db.Integer, db.ForeignKey('user_type.user_type_id'))
+    cars = db.relationship('Car', backref='Owner', primaryjoin='Car.user_id==User.user_id')
 
     user_type = db.relationship('UserType', primaryjoin='User.user_type_id == UserType.user_type_id', backref='users')
 
@@ -24,7 +25,7 @@ class User(db.Model):
 
 class UserSchema(marsh.Schema):
     class Meta:
-        fields = ('user_id', 'registration', 'name', 'email', 'password', 'salt', 'user_type_id')
+        fields = ('user_id', 'registration', 'name', 'email', 'password', 'salt', 'cars', 'user_type_id')
 
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)

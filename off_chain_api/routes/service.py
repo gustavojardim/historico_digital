@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 from off_chain_api.app_setup import db
 from off_chain_api.model.service import Service, service_schema, services_schema
+from off_chain_api.model.car import Car
 
 service_routes = Blueprint('service_routes', __name__, template_folder='routes')
 
@@ -18,11 +19,13 @@ def get(service_id):
 def add():
     parameters = request.json
 
-    car_id = parameters['car_id']
+    car = Car.query.filter_by(license_plate=parameters['license_plate']).first()
+
+    car_id = car.car_id
     vendor_id = parameters['vendor_id']
 
     service = Service(car_id, vendor_id)
 
     db.session.add(service)
     db.session.commit()
-    return service_schema(service)
+    return service_schema.jsonify(service)

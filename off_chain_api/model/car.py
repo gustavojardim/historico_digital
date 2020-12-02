@@ -11,7 +11,6 @@ class Car(db.Model):
     node_id = db.Column(db.Integer, db.ForeignKey('node.node_id'))
 
     node = db.relationship('Node', primaryjoin='Car.node_id == Node.node_id', backref='cars')
-    user = db.relationship('User', primaryjoin='Car.user_id == User.user_id', backref='cars')
 
     def __init__(self, user_id, license_plate, mileage, node_id):
         self.user_id = user_id

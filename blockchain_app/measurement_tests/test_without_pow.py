@@ -1,4 +1,4 @@
-from blockchain import Blockchain
+from blockchain_app.blockchain import Blockchain
 
 import time
 import json
@@ -19,14 +19,14 @@ if __name__ == "__main__":
                                   "test5" : "test"+str(i)})
         total_time = total_time + (time.time() - start_time)
 
-    blocks = []
+    # blocks = []
 
-    for block in reversed(blockchain.chain):
+    # for block in reversed(blockchain.chain):
 
-        blocks.append(block.__dict__)
+    #     blocks.append(block.__dict__)
 
-    with open('data.json', 'w') as fp:
-        json.dump(blocks, fp)
+    # with open('data.json', 'w') as fp:
+    #     json.dump(blocks, fp)
 
     avg_time = total_time / 100
 
